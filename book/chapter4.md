@@ -1,27 +1,45 @@
 4. SINGLE LAYER NEURAL NETWORK IN TENSORFLOW
+4. 텐서플로우에서의 단일 신경망
 
 In the preface, I commented that one of the usual uses of Deep Learning includes pattern recognition. Given that, in the same way that beginners learn a programming language starting by printing “Hello World” on screen, in Deep Learning we start by recognizing hand-written numbers.
 
+이번 서문에서는, 패턴 인식을 포함한 딥러닝의 대표적인 사용사례에 대해 소개 하겠다.  초보자들이 처음 프로그래밍 언어를 배울때 "Hello, World"를 화면에 출력하는 것과 같이, 딥러닝은 손글씨로 쓰여진 숫자를 인식하는 것으로 시작한다.
+
 In this chapter I present how to build, step by step, a neural network with a single layer in TensorFlow. This neural network will recognize hand-written digits, and it’s based in one of the diverse examples of the beginner’s tutorial of Tensor-Flow[27].
+
+이번 장은 텐서플로우 상에서 신경망을 단계별로 빌드하는 방법을 설명하고자 한다. 많은 예제들 중에서, 텐서플로우[27] 사이트에 초보자 사용법에 나와있는 숫자 손글씨 예제를 활용할 것이며, 우리가 구축하는 신경망은 이 손글씨 숫자를 인식하는 용도이다.
 
 Given the introductory style of this book, I chose to guide the reader while simplifying some concepts and theoretical justifications at some steps through the example.
 
+이 책은 소개를 하는 용도로 제작되었기 때문에, 예제에 있는 몇몇 단계별 중에는 개념들과 이론적 증명들을 간단하게 하여 독자들을 가이드 하기로 선택하였다.
+
 If the reader is interested in learn more about the theoretical concepts of this example after reading this chapter, I suggest to read Neural Networks and Deep Learning [28], available online, presenting this example but going in depth with the theoretical concepts.
 
+만약 독자들 중에서, 이번 장을 읽은 후 이론적인 개념들을 배우는 것에 흥미가 있다면, Neural Networks and Deep Learning [28] 책을 읽도록 권하겠다. 이 책은 온라인에 공개 되 있으며, 이번 예제에 심화된 이론적 개념들이 추가 된 내용들이 있기 때문이다.
 
 The MNIST data-set
 
 The MNIST data-set is composed by a set of black and white images containing hand-written digits, containing more than 60.000 examples for training a model, and 10.000 for testing it. The MNIST data-set can be found at the MNIST database[29].
 
+MNIST 데이터 셋은 손글씨 숫자들이 흑백 이미지로 구성되 있으며, 학습 모델을 위한 60,000개의 예제들 및 검증을 위한 10,000개 이상의 예제로 구성되어 있다.  MNIST 데이터셋은 MNIST 데이터베이스[29]에서 찾을 수 있다.
+
 This data-set is ideal for most of the people who begin with pattern recognition on real examples without having to spend time on data pre-processing or formatting, two very important steps when dealing with images but expensive in time.
 
+이 데이터 셋은 패턴인식을 시작하는 사람들에게 적합한 데이터 셋이다. 이 데이터 셋은 보통 이미지를 다룰 때, 가장 중요한 2가지 단계지만 시간 소모량이 큰 데이터 전처리와 형식 통일을 할 필요가 없다.
+
 The black and white images (bilevel) have been normalized into 20×20 pixel images, preserving the aspect ratio. For this case, we notice that the images contain gray pixels as a result of the anti-aliasing [30] used in the normalization algorithm (reducing the resolution of all the images to one of the lowest levels). After that, the images are centered in 28×28 pixel frames by computing the mass center and moving it into the center of the frame. The images are like the ones shown here:
+
+이 흑백 이미지 (이중 레벨)는 형상비를 유지하면서 20 × 20 픽셀의 이미지로 정규화 되어있다. 이 경우에는 정규화 알고리즘에 활용되는 엘리어싱 제거 [30] (모든 이미지의 해상도를 최저 이미지의 해상도로 감소)를 적용한 결과로 회색 픽셀들이 포함되 있다.  그 후에 이미지들은 질량 중심을 계산하고 프레임의 중심으로 이동하는 방법을 활용하여 28 × 28 픽셀 프레임들에 중앙화 하였다. 이미지들은 아래와 같은 방식으로 표현 되어있다.
 
 image034
 
 Also, the kind of learning required for this example is supervised learning; the images are labeled with the digit they represent. This is the most common form of Machine Learning.
 
+또한, 이번 예제에서 요구되는 학습방법은 지도학습이다. 각각의 이미지들은 의미하는게 무엇인지 숫자로 표기되있다. 이 학습법은 머신러닝에서 가장 많이 활용되는 형태 중 하나이다.
+
 In this case we first collect a large data set of images of numbers, each labelled with its value. During the training, the model is shown an image and produces an output in the form of a vector of scores, one score for each category. We want the desired category to have the highest score of all categories, but this is unlikely to happen before training.
+
+먼저, 각각 표기가 된 많은 숫자 이미지들의 데이터 셋을 수집한다. 훈련 중에는, 이 모델은 이미지와 결과물을 도출해 낼 것이다. 결과물들은 각각의 점수를 각각의 카테고리별로 나누어진 백터 형태의 점수형으로 되어 있다. 전체 카테고리에서 원하는 카테고리가 가장 높은 점수를 얻기를 기대하지만, 훈련 전에는 발생할 가능성이 높지 않다.
 
 We compute an objective function that measures the error (as we did in previous chapters) between the output scores and the desired pattern of scores. The model then modifies its internal adjustable parameters , called weights, to reduce this error. In a typical Deep Learning system, there may be hundreds of millions of these adjustable weights, and hundreds of millions of labelled examples with which to train the machine. We will consider a smaller example in order to help the understanding of how this type of models work.
 
