@@ -46,19 +46,30 @@ We compute an objective function that measures the error (as we did in previous 
 
 To download easily the data, you can use the script input_data.py [31], obtained from Google’s site [32] but uploaded to the book’s github for your comodity. Simply download the code input_data.py in the same work directory where you are programming the neural network with TensorFlow. From your application you only need to import and use in the following way:
 
+Google 사이트 [32]에서 input_data.py [31] 스크립트를 활용하면 쉽게 데이터를 받을 수 있다. 물론, 편의성을 위해서 책 github에 업로드도 해 놓았다.  신경망을 사용한 텐서플로우로 프로그래밍을 한 작업 디렉토리에 input_data.py를 다운로드 하기만 하면 된다. 그 이후, 어플리케이션에서 아래와 같은 방법으로 import 하기만 하면 된다:
+
 import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+
 After executing these two instructions you will have the full training data-set in mnist.train and the test data-set in mnist.test. As I previously said, each element is composed by an image, referenced as “xs”, and its corresponding label “ys”, to make easier to express the processing code. Remember that all data-sets, training and testing, contain “xs” and “ys”; also, the training images are referenced in mnist.train.images and the training labels in mnist.train.labels.
 
+위에 나온 2단계의 설명을 따르면, 전체 학습 데이터셋인 mnist.train과 테스트 데이터셋인 mnist.test를 보유 할 수 있다. 전에 언급한대로, 각각의 요소들은 "xs"는 구성되어 있는 이미지, "ys"는 프로세싱 코드의 표현을 좀 더 쉽게 하기 위한 이미지들의 래이블로 표현된다.  모든 데이터셋, 학습 및 검증 과정들은 "xs"나 "ys"를 포함하고 있고, 학습 이미지는 mnist.train.images에 학습 래이블은 mnist.train.labels에 있다.
+
 As previously explained, the images are formed by 28×28 pixels, and can be represented as a numerical matix. For example, one of the images of number 1 can be represented as:
+전에 설명했던 대로, 이미지들은 28*28 픽셀들로 이루어져 있고, 각각 메트릭스의 수치값으로 표현 될 수 있다. 한 가지 예를 들면, 숫자 1을 표현하는 이미지중 하나는 아래와 같이 표현 할 수 있다:
 
 image036
 
 Where each position indicates the level of lackness of each pixel between 0 and 1. This matrix can be represented as an array of 28×28 = 784 numbers. Actually, the image has been transformed in a bunch of points in a vectorial space of 784 dimensions. Only to mention that when we reduce the structure to 2 dimensions, we can be losing part of the information, and for some computer vision algorithms this could affect their result, but for the simplest method used in this tutorial this will not be a problem.
 
+
+
+
 Summarizing, we have a tensor mnist.train.images in 2D in which calling the fuction get_shape() indicates its shape:
 
+
 TensorShape([Dimension(60000), Dimension(784)])
+
 
 The first dimension indexes each image and the second each pixel in each image. Each element of the tensor is the intensity of each pixel between 0 and 1.
 
