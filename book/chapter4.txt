@@ -67,6 +67,8 @@ Where each position indicates the level of lackness of each pixel between 0 and 
 
 
 
+
+
 Summarizing, we have a tensor mnist.train.images in 2D in which calling the fuction get_shape() indicates its shape:
 
 
