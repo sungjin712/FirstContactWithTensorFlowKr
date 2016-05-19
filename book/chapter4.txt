@@ -44,6 +44,8 @@ In this case we first collect a large data set of images of numbers, each labell
 
 We compute an objective function that measures the error (as we did in previous chapters) between the output scores and the desired pattern of scores. The model then modifies its internal adjustable parameters , called weights, to reduce this error. In a typical Deep Learning system, there may be hundreds of millions of these adjustable weights, and hundreds of millions of labelled examples with which to train the machine. We will consider a smaller example in order to help the understanding of how this type of models work.
 
+우선, 결과 스코어와 기대 패턴 스코어 값들의 오류를 나타내는 목적함수를 계산한다. 그 다음, 오류를 감소 시키기 위해 내부 조정 가능한 파라미터(매개 변수) 값의 가중치(Weight)을 수정한다.  일반적인 딥러닝 시스템에서는 기계에 학습시키기 위해, 아마도 수억개의 조정 가능한 가중치들과 수억개의 레이블이 있는 예제들을 보유하고 있을 것이다.  이해를 돕기 위하여 이러한 종류의 모델들이 어떻게 작동하는지 알기 위해 소규모의 예제들을 사용하였다.
+
 To download easily the data, you can use the script input_data.py [31], obtained from Google’s site [32] but uploaded to the book’s github for your comodity. Simply download the code input_data.py in the same work directory where you are programming the neural network with TensorFlow. From your application you only need to import and use in the following way:
 
 Google 사이트 [32]에서 input_data.py [31] 스크립트를 활용하면 쉽게 데이터를 받을 수 있다. 물론, 편의성을 위해서 책 github에 업로드도 해 놓았다.  신경망을 사용한 텐서플로우로 프로그래밍을 한 작업 디렉토리에 input_data.py를 다운로드 하기만 하면 된다. 그 이후, 어플리케이션에서 아래와 같은 방법으로 import 하기만 하면 된다:
