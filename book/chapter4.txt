@@ -58,50 +58,67 @@ After executing these two instructions you will have the full training data-set 
 위에 나온 2단계의 설명을 따르면, 전체 학습 데이터셋인 mnist.train과 테스트 데이터셋인 mnist.test를 보유 할 수 있다. 전에 언급한대로, 각각의 요소들은 "xs"는 구성되어 있는 이미지, "ys"는 프로세싱 코드의 표현을 좀 더 쉽게 하기 위한 이미지들의 래이블로 표현된다.  모든 데이터셋, 학습 및 검증 과정들은 "xs"나 "ys"를 포함하고 있고, 학습 이미지는 mnist.train.images에 학습 래이블은 mnist.train.labels에 있다.
 
 As previously explained, the images are formed by 28×28 pixels, and can be represented as a numerical matix. For example, one of the images of number 1 can be represented as:
-전에 설명했던 대로, 이미지들은 28*28 픽셀들로 이루어져 있고, 각각 메트릭스의 수치값으로 표현 될 수 있다. 한 가지 예를 들면, 숫자 1을 표현하는 이미지중 하나는 아래와 같이 표현 할 수 있다:
+이전에 설명했던 대로, 이미지들은 28*28 픽셀들로 이루어져 있고, 각각 행렬의 수치치값으로 표현 될 수 있다. 예를 들면, 숫자 1을 표현하는 이미지중 하나는 아래와 같이 표현 할 수 있다:
 
 image036
 
 Where each position indicates the level of lackness of each pixel between 0 and 1. This matrix can be represented as an array of 28×28 = 784 numbers. Actually, the image has been transformed in a bunch of points in a vectorial space of 784 dimensions. Only to mention that when we reduce the structure to 2 dimensions, we can be losing part of the information, and for some computer vision algorithms this could affect their result, but for the simplest method used in this tutorial this will not be a problem.
 
-
-
-
-
+이미지에 표현된 각 위치의 0 과 1 사이의 픽셀 값은, 명암의 정도로 표시되어 있다. 또한, 전체 이미지의 행렬은 28×28 = 784 수의 배열로 표현 되있다. 실질적으로 이 이미지는 784 차원의 백터 공간 값 안에 있는 수 많은 점들로 변환 되 있다.  만약에 이 이미지를 2차원 구조로 축소시킨다면, 일부 관련 정보들을 잃을 수 있다.  몇몇 컴퓨터 영상 알고리즘에서는 결과에도 영향을 미치지만, 이번 튜토리얼은 간단한 접근법이기 때문에 문제가 되지 않는다.
 
 Summarizing, we have a tensor mnist.train.images in 2D in which calling the fuction get_shape() indicates its shape:
 
-
-TensorShape([Dimension(60000), Dimension(784)])
-
+요약하자면, TensorShape([Dimension(60000), Dimension(784)])으로 구성된 get_shape()의 함수를 포함 한 2D 텐서인 mnist.train.images를 보유 한 것이다.
 
 The first dimension indexes each image and the second each pixel in each image. Each element of the tensor is the intensity of each pixel between 0 and 1.
 
+첫번째 차원은 이미지 각각에 대한 인덱스이며, 두번째 차원은 이미지 안의 픽셀을 나타낸다. 텐서의 각각의 요소들은 0과 1사이의 화소의 강도 값 (백:0, 흑:1) 으로 이루어져 있다.
+
 Also, we have the labels in the form of numbers between 0 and 9, indicating which digit each image represents. In this example, we are representing labels as a vector of 10 positions, which the corresponding position for the represented number contains a 1 and the rest 0. So mnist.train.labelses is a tensor shaped as TensorShape([Dimension(60000), Dimension10)]).
 
+또한, 각각의 이미지를 어떤 숫자인지 표현하기 위해 0에서 9까지 숫자에 라벨을 표기 하였다. 이번 예제에서는, 숫자의 위치의 포함 여부에 따라 1이나 그 외에는 0으로 표현 된 10가지 위치들로 구성된 백터값을 라벨화 했다. 위의 사항들 때문에, 전체 구성도를 보면, mnist.train.labels은 TensorShape([Dimension(60000), Dimension10)])으로 이루어져 있다.
+
 An artificial neutron
+인공 신경망
+
 
 Although the book doesn’t focus on the theoretical concepts of neural netwoks, a brief and intuitive introduction of how neurons work to learn the training data will help the reader to undertand what is happening. Those readers that already know the theory and just seek how to use TensorFlow can skip this section.
 Let’s see a simple but illustrative example of how a neuron learns. Suppose a set of points in a plane labeled as “square” and “circle”. Given a new point “X”, we want to know which label corresponds to it:
+
+이 책이 뉴럴 네트워크의 이론적 개념에 포커싱을 맞추고 있진 않지만 독자들의 이해를 돕기 위해 어떻게 뉴런들이 훈련 데이터를 통해 학습하는지 짧고 쉽게 소개하겠습니다. 이론에 대해 이미 알고 있는 독자는 이 섹션을 건너뛰고 텐서플로우 프로그래밍 부분으로 바로 가도 좋습니다.
+
+뉴런이 어떻게 학습하는지 간단한 그림 예제를 보겠습니다. 사각형과 원 모양으로 표시된 포인트들이 2차원 평면에 있습니다. 이럴 때 새로운 포인트 “X” 가 주어지면 이 포인트는 어떤 레이블이 될까요?
 
 Screen Shot 2016-02-16 at 09.30.14
 
 A usual approximation could be to draw a straight line dividing the two groups and use it as a classifier:
 
+일반적인 근사 방법은 두 그룹을 나누는 라인을 긋고 이를 분류의 기준으로 삼는 것입니다.
+
 Screen Shot 2016-02-16 at 09.30.09
 
 In this situation, the input data is represented by vectors shaped as (x,y) representing the coordinates in this 2-dimension space, and our function returning ‘0’ or ‘1’ (above or below the line) to know how to classify it as a “square” or “circle”. Mathematically, as we learned in the linear regression chapter, the “line” (classifier) can be expressed as y= W*x+b.
 
+이 예에서 입력 데이터는 2차원 공간의 좌표 (x, y)를 갖는 벡터로 표현됩니다. 그리고 ‘0’ 또는 ‘1’(직선의 위, 아래)을 리턴하는 함수로 사각형과 원으로 분류하게 됩니다. 수학적으로는 선형 회귀분석 장에서 배운대로 이 ‘라인'(분류기준)은 y = W * x + b 로 쓸 수 있습니다.
+
 Generalizing, a neuron must learn a weight W (with the same dimension as the input data X) and an offset b (called bias in neural networks) to learn how to classify those values. With them, the neuron will compute a weighted sum of the inputs in X using weight W, and add the offset b; and finally the neuron will apply an “activation” non-linear function to produce the result of “0” or “1”.
 The function of the neuron can be more formally expressed as:
+
+일반화해서 말하자면 뉴런은 가중치 W (입력 데이터 X 와 같은 차원을 가짐)와 오프셋 b (뉴럴 네트워크에서 바이어스-bias-라고 불림)를 학습시켜 어떻게 포인트들을 분류하는지를 배우는 것입니다. 이런 방식을 따라 뉴런은 가중치 W 를 사용하여 입력 데이터 X 의 가중치 합을 계산하고 오프셋 b 를 더합니다. 마지막으로 뉴런은 ‘0’ 또는 ‘1’의 결과로 만들기 위해 비선형 ‘활성화’ 함수를 적용합니다. 뉴런의 기능을 조금 형식적으로 쓰면 아래와 같습니다.
 
 image043
 
 Having defined this function for our neuron, we want to know how the neuron can learn those parameters W and b from the labeled data with “squares” and “circles” in our example, to later label the new point “X”.
 
+뉴런의 함수를 정의한 것을 이용해 어떻게 뉴런이 사각형과 원으로 레이블되어 있는 훈련 데이터로 파라메타 W 와 b 를 학습하고 새로운 포인트 ‘X’ 를 분류하는지 알아보도록 하겠습니다.
+
 A first approach could be similar to what we did with the linear regression, this is, feed the neuron with the known labeled data, and compare the obtained result with the real one. Then, when iterating, weights in W and b are adjusted to minimize the error, as shown again in chapter 2 for the linear regression line.
 
+시작은 선형회귀때 했던 것과 비슷합니다. 즉, 뉴런에게 레이블된 데이터를 주입하고 얻은 결과를 실제 값과 비교하는 것입니다. 그렇게 반복하면서 2장에서 선형 회귀분석에서 본 것 처럼 에러를 최소화하기 위해 가중치 W 와 b 를 조정합니다.
+
 Once we have the W and b parameters we can compute the weighted sum, and now we need the function to turn the result stored in z into a ‘0’ or ‘1’. There are several activation functions available, and for this example we can use a popular one called sigmoid [33], returning a real value between 0 and 1
+
+일단 W 와 b 파라메타를 구해서 가중치 합(역주: W*x + b 값)을 계산하고 나면 z 에 저장된 결과를 ‘0’ 또는 ‘1’ 로 바꿀 함수가 필요합니다. 몇 종류의 활성화 함수가 있지만 여기에서는 0 과 1 사이의 실수를 리턴하는 유명한 시그모이드(sigmoid) 함수를 사용하겠습니다.
 
 :
 
@@ -109,79 +126,124 @@ image046
 
 Looking at the formula we see that it will tend to return values close to 0 or 1. If input z is big enough and positive, “e” powered to minus z is zero and then y is 1. If the input z is big enough and negative, “e” powered to a large positive number becomes also a large positive number, so the denominator becomes large and the final y becomes 0. If we plot the function it would look like this:
 
+이 공식을 보면 0 과 1 에 가까운 값으로 수렴하는 경향이 있는 것을 알 수 있습니다. 만약 z 가 충분히 큰 양수이면 e^{-z} 는 0 에 가까워지고 결국 y 는 1 이 됩니다. 만약 z 가 충분히 큰 음수면 e^{-z} 는 매우 큰 양수가 되고 분모가 커지므로 y 는 0 이 됩니다. 이 함수를 그림으로 나타내면 아래와 같습니다.
+
+
 image045
 
 Since here we have presented how to define a neuron, but a neural network is actually a composition of neurons connected among them in a different ways and using different activation functions. Given the scope of this book, I’ll not enter into all the extension of the neural networks universe, but I assure you that it is really exciting.
 
+여기서 우리는 하나의 뉴런에 대해서 정의를 했지만 뉴럴 네트워크는 사실상 여러가지 방식으로 연결되어 있고 각기 다른 활성화 함수들을 사용하는 뉴런들을 합쳐 놓은 것입니다. 이 책의 구성상 뉴럴 네트워크 세계의 모든 면면을 살펴 볼 수는 없을 것 같습니다만 진짜 흥미로운 분야입니다.
+
 Just to mention that there is a specific case of neural networks (in which Chapter 5 is based on) where the neurons are organized in layers, in a way where the inferior layer (input layer) receives the inputs, and the top layer (output layer) produces the response values. The neural network can have several intermediate layers, called hidden layers. A visual way to represent this is:
+
+뉴럴 네트워크의 전형적인 구조는(5장에서 사용하게 됨) 입력을 받는 하위 레이어(입력 레이어), 결과 값을 내는 상위 레이어(출력 레이어)처럼 여러개의 레이어로 뉴런을 구성하는 것입니다. 뉴럴 네트워크는 히든(hidden) 레이어라 불리는 여러개의 중간 레이어를 가질 수 있습니다. 그림으로 보면 아래와 같습니다.
 
 image049
 
 In these networks, the neurons of a layer communicate to the neurons of the previous layer to receive information, and then communicate their results to the neurons of the next layer.
 
+이런 네트워크에서는 한 레이어의 뉴런들은 정보를 받기 위해 이전 레이어의 뉴런과 커뮤니케이션 하고 결과를 내보내기 위해 다음 레이어의 뉴런과 커뮤니케이션 합니다.
+
 As previously said, there are more activation functions apart of the Sigmoid, each one with different properties. For example, when we want to classify data into more than two classes at the output layer, we can use the Softmax[34] activation function, a generalization of the sigmoid function. Softmax allows obtaining the probability of each class, so their sum is 1 and the most probable result is the one with higher probability.
+
+앞서 이야기한 것 처럼 시그모이드 외에도 각기 다른 특성을 가진 여러가지 활성화 함수가 있습니다. 예를 들면 출력 레이어에서 두가지 이상의 클래스로 데이터를 분류하고 싶을 때에는 시그모이드 함수의 일반화된 형태인 소프트맥스 활성화 함수를 사용할 수 있습니다. 소프트맥스 함수는 각 클래스(역주: 카테고리)에 대한 확률을 만들어 냅니다. 각 클래스의 확률의 합은 1 이고 가장 높은 값을 가진 클래스가 결과 값이 될 가능성이 가장 높습니다.
 
 A easy example to start: Softmax
 
+간단한 예제: 소프트맥스
+
 Remember that the problem to solve is that, given an input image, we get the probability that it belongs to a certain digit. For example, our model could predict a “9” in an image with an 80% certainty, but give a 5% of chances to be an “8” (due to a dubious lower trace), and also give certain low probabilities to be any other number. There is some uncertainty on recognizing hand-written numbers, and we can’t recognize the digits with a 100% of confidence. In this case, a probability distribution gives us a better idea of how much confidence we have in our prediction.
+
+여기서 풀려는 문제는 입력 이미지가 주어졌을 때 0~9 까지 각 숫자와 얼마나 비슷한지에 대한 확률을 얻으려는 것임을 기억해 두세요. 예를 들면 우리 모델이 어떤 이미지에 대해 “9” 일 확률이 80% 이고 “8” 일 확률이 5%(9의 애매한 꼬리 부분으로 인해) 이며 다른 숫자에 대해서는 낮은 확률을 예측할 수 있습니다. 손글씨 숫자를 인식하는 것엔 어느정도 불확실한 부분이 있고 100% 확신을 가지고 하긴 어렵습니다. 이런 경우에 확률 분포는 예측에 대해 얼마나 신뢰할 수 있는지에 대해 좋은 정보를 제공합니다.
 
 So, we have an output vector with the probability distribution for the different output labels, mutully exclusive. This is, a vector with 10 probability values, each one corresponding to each digit from 0 to 9, and all probabilities summing 1.
 
+그래서 우리는 상호 배타적인 레이블에 대한 결과로 확률 분포를 담은 출력 벡터를 가집니다. 10개의 확률 값을 가진 이 벡터는 각각 0 에서 9 까지의 숫자에 대응되는 것이고 확률의 전체 합은 1 입니다.
+
 As previously said, we get to this by using an output layer with the softmax activation function. The output of a neuron with a softmax function depends on the output of the other neurons of its layer, as all of their outputs must sum 1.
+
+앞서 언급한 것 처럼 이 벡터는 출력 레이어를 소프트맥스 활성화 함수로 구성하여 얻어집니다. 소프트맥스 함수를 사용한 뉴런의 출력 값은 그 레이어의 다른 뉴런의 출력 값에 영향을 받게 되고 그들의 출력 값 합은 1 이 되어야 합니다.
 
 The softmax function has two main steps: first, the “evidences” for an image belonging to a certain label are computed, and later the evidences are converted into probabilities for each possible label.
 
+소프트맥스 함수는 두개의 주요 단계가 있습니다. 첫번째는 이미지가 어떤 레이블에 속하는 지 근거(evidence)들을 계산하는 것이며 두번째는 근거들을 각 레이블에 대한 확률로 변환하는 것입니다.
+
 Evidence of belonging
+클래스 소속 근거
 
 Measuring the evidence of a certain image to belong to a specific class/label, a usual approximation is to compute the weighted sum of pixel intensities. That weight is negative when a pixel with high intensity happens to not to be in a given class, and positive if the pixel is frequent in that class.
 
+이미지가 어떤 클래스 혹은 레이블에 속하는 지의 근거를 측정하려면 보통 사용하는 방법은 픽셀의 진한 정도에 대한 가중치 합을 계산하는 것입니다. 어떤 클래스 픽셀에는 없는 진한 픽셀이 이미지에 있다면 가중치는 음의 값이 되고 클래스의 진한 픽셀이 이미지와 자주 겹친다면 가중치는 양의 값이 됩니다.
+
 Let’s show a graphical example: suppose a learned model for the digit “0” (we will see how this is learned later). At this time, we define a model as “something” that contains information to know whether a number belongs to a specific class. In this case, we chose a model like the one below, where the red (or bright gray for the b/n edition) represents negative examples (this is, reduce the support for those pixels present in “0”), while the blue (the darker gray for b/n edition) represents the positive examples. Look at it:
+
+그림으로 숫자 ‘0’ 을 학습한 모델의 예를 살펴 보겠습니다.(나중에 어떻게 학습되는지 살펴보겠습니다) 여기에서는 이미지가 어떤 클래스에 속할 지에 대한 정보를 가진 어떤 것이 모델이라고 정의합니다. 이 경우에는 아래와 같은 모델이 선택되었습니다. 붉은 색은 잘 맞지 않는 부분을 나타내고(즉 ‘0’ 에는 잘 나타나지 않는 픽셀임) 푸른 색은 잘 들어 맞는 부분임을 나타냅니다.
 
 image050
 
 Think in a white paper sheet of 28×28 pixels and draw a “0” on it. Generally our zero would be drawn in the blue zone (remember that we left some space around the 20×20 drawing zone, centering it later).
 
+28×28 픽셀을 가진 흰 종이에 “0” 을 그려 본다고 생각해 봅시다. 일반적으로 ‘0’ 은 푸른 색 부분에 그려지게 될 것입니다.(20×20 그림 영역 주위에 약간의 여유를 두고 가운데를 맞춘 것임을 기억하세요)
+
 It is clear that in those cases where our drawing crosses the red zone, it is most probably that we are not drawing a zero. So, using a metric based in rewarding those pixels, stepping on the blue region and penalizing those stepping the red zone seems reasonable.
 
+붉은 영역을 가로지르는 이미지는 숫자 0 이 아니라고 생각하는 것이 자연스럽습니다. 그래서 푸른 영역에 위치한 픽셀들은 가산점을 주고 붉은 영역에 위치한 픽셀들은 페널티를 주는 측정 방법이 타당성이 있습니다.
+
 Now think of a “3”: it is clear that the red zone of our model for “0” will penalize the probabilities of it being a “0”. But if the reference model is the following one, generally the pixels forming the “3” will follow the blue region; also the drawing of a “0” would step into a red zone.
+
+이제 숫자 ‘3’ 을 생각해 봅시다. 숫자 ‘0’ 을 위한 모델에서는 붉은 영역이 ‘0’ 이 될 가능성을 낮추는 역할을 합니다. 하지만 아래와 같은 모델에서는 ‘3’ 을 구성하는 픽셀은 푸른 영역이 되고 ‘0’ 을 그리면 붉은 색위에 놓일 것 입니다.
 
 image052
 
 I hope that the reader, seeing those two examples, understands how the explained approximation allows us to estimate which number represent those drawings.
-The following figure shows an example of the ten different labels/classes learned from the MNIST data-set (extracted from the examples of Tensorflow[35]). Remember that red (bright gray) represents negative weights and blue (dark gray) represents the positive ones.
+이 두 예제를 보면서 설명한 방법으로 어떻게 이미지의 숫자를 추정할 수 있는지 이해하는데 도움이 되었길 바랍니다.
 
+The following figure shows an example of the ten different labels/classes learned from the MNIST data-set (extracted from the examples of Tensorflow[35]). Remember that red (bright gray) represents negative weights and blue (dark gray) represents the positive ones.
+아래 그림은 MNIST 데이터셋에서 학습된 10개의 레이블(클래스)입니다.(텐서플로우 예제에서 추출함) 붉은 색은 음의 가중치를 나타내고 푸른색은 양의 가중치를 나타냅니다.
  
 
 image054
 
 In a more formal way, we can say that the evidence for a class i given an input x is expressed as:
+좀 더 형식적으로 쓰면 입력 x 가 주어졌을 때 클래스 i 에 대한 근거는 아래와 같이 쓸 수 있습니다.
 
 image056
 
 Where i indicates the class (in our situation, between 0 and 9), and j is an index to sum the indexes of our input image. Finally Wi represents the aforementioned weights.
+i 는 클래스(우리 예제에서는 0~9까지 숫자)를 나타내며 j 는 입력 이미지 중 하나를 나타냅니다. 결국 W_i 는 앞서 언급한 가중치를 나타냅니다.
 
 Remember that, in general, the models also include an extra parameter representing the bias, adding some base uncertainty. In our situation, the formula would end like this:
+일반적으로 모델은 약간의 불확실성을 더해 편향성(bias)을 표현하는 추가적인 파라메타를 가집니다. 그러므로 공식은 아래와 같이 됩니다.
+
 
 image058
 
 For each i (between 0 and 9) we have a matrix Wi of 784 elements (28×28), where each element j is multiplied by the corresponding component j of the input image, with 784 components, then added bi. A graphical view of the matrix calculus and indexes is this:
+각 i (0에서 9까지 숫자)에 대해 784개 엘리먼트(28×28)를 가지는 행렬 W_i 를 얻게 됩니다. W 의 각 엘리먼트 j 는 입력 이미지의 784개의 콤포넌트(역주: 픽셀) j 에 곱해지고 b_i 가 더해 집니다. 그림으로 행렬 연산과 인덱스를 보면 아래와 같습니다.
+
 
 image061
 
 Probability of belonging
+클래스 소속 확률
 
 We commented that the second step consisted on computing probabilities. Specifically we turn the sum of evidences into predicted probabilities, indicated as y, using the softmax function:
+확률을 계산하는 두번째 단계를 설명하겠습니다. 특별히 소프트맥스 함수를 사용하여 근거들의 합을 예측 확률 y 로 산출할 것입니다.
 
 image062
 
 Remember that the output vector must be a probability function with sum equals 1. To normalize each component, the softmax function uses the exponential value of each of its inputs and then normalizes them as follows:
+출력 벡터는 합이 1 인 확률 함수가 되어야 합니다. 각 콤포넌트(역주: 벡터의 원소)를 정규화하기 위해 소프트맥스 함수는 입력 값을 모두 지수 값으로 바꾸어 아래와 같이 정규화합니다.
 
 image064
 
 The obtained effect when using exponentials is a multiplication effect in weights. Also, when the evidence for a class is small, this class support is reduced by a fraction of its previous weight. Furthermore, softmax normalizes the weights making them to sum 1, creating a probability distribution.
+지수 함수를 사용하면 가중치를 크게하는 효과를 얻을 수 있습니다. 또한 한 클래스의 근거가 작을 때 이 클래스의 확률도 더 낮아지게 됩니다. 뿐만아니라 소프트맥스는 가중치의 합이 1 이 되도록 정규화하여 확률 분포를 만들어 줍니다.
+
 
 The interesting fact of such function is that a good prediction will have one output with a value near 1, while all the other outputs will be near zero; and in a weak prediction, some labels may show similar support.
-
+이런 함수의 좋은 점은 예측이 잘 되면 1 에 가까운 값이 하나가 있게 되고 다른 출력 값은 0 에 가깝게 되는 것입니다. 하지만 예측 값이 뚜렷하지 않을 때는 여러 레이블이 비슷한 확률을 가지게 될 수 있습니다.
 
 
 ----- 송치성님 파트 ----------
