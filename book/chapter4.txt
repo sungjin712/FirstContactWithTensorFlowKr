@@ -85,38 +85,47 @@ An artificial neutron
 Although the book doesn’t focus on the theoretical concepts of neural netwoks, a brief and intuitive introduction of how neurons work to learn the training data will help the reader to undertand what is happening. Those readers that already know the theory and just seek how to use TensorFlow can skip this section.
 Let’s see a simple but illustrative example of how a neuron learns. Suppose a set of points in a plane labeled as “square” and “circle”. Given a new point “X”, we want to know which label corresponds to it:
 
-이 책이 뉴럴 네트워크의 이론적 개념에 포커싱을 맞추고 있진 않지만 독자들의 이해를 돕기 위해 어떻게 뉴런들이 훈련 데이터를 통해 학습하는지 짧고 쉽게 소개하겠습니다. 이론에 대해 이미 알고 있는 독자는 이 섹션을 건너뛰고 텐서플로우 프로그래밍 부분으로 바로 가도 좋습니다.
+이 책은 신경망의 이론적 개념에 집중하고 있지 않지만, 독자들의 이해를 돕기 위하여 간단하고 쉽게 신경망이 어떻게 학습 데이터를 학습하는 과정에 대해서 소개하겠다. 만약 신경망에 대한 이론을 알고 있는 독자들은 바로 Tensorflow 설명 부분으로 넘어가는 것을 추천한다.
+신경망이 어떻게 학습하는 것에 대한 간단한 삽화와 함께 확인해보자. 2차원 평면에 "사각형"과 "원"으로 레이블 된 점들이 있다고 가정해보자. 새로운 포인트 "X"가 주어졌을 때, 어떤 레이블이 연관 되었는지 알고 싶다.
 
-뉴런이 어떻게 학습하는지 간단한 그림 예제를 보겠습니다. 사각형과 원 모양으로 표시된 포인트들이 2차원 평면에 있습니다. 이럴 때 새로운 포인트 “X” 가 주어지면 이 포인트는 어떤 레이블이 될까요?
 
 Screen Shot 2016-02-16 at 09.30.14
 
 A usual approximation could be to draw a straight line dividing the two groups and use it as a classifier:
 
-일반적인 근사 방법은 두 그룹을 나누는 라인을 긋고 이를 분류의 기준으로 삼는 것입니다.
+일반적인 근사치로 표현하면, 그룹을 2개로 나누는 선을 긋고 이 것을 분류의 기준으로 활용한다.
 
 Screen Shot 2016-02-16 at 09.30.09
 
 In this situation, the input data is represented by vectors shaped as (x,y) representing the coordinates in this 2-dimension space, and our function returning ‘0’ or ‘1’ (above or below the line) to know how to classify it as a “square” or “circle”. Mathematically, as we learned in the linear regression chapter, the “line” (classifier) can be expressed as y= W*x+b.
 
-이 예에서 입력 데이터는 2차원 공간의 좌표 (x, y)를 갖는 벡터로 표현됩니다. 그리고 ‘0’ 또는 ‘1’(직선의 위, 아래)을 리턴하는 함수로 사각형과 원으로 분류하게 됩니다. 수학적으로는 선형 회귀분석 장에서 배운대로 이 ‘라인'(분류기준)은 y = W * x + b 로 쓸 수 있습니다.
+이 상황에서는 입력 데이터는 2차원 공간의 (x,y)로 표현되는 백터 값으로 표현된다. 또한, "사각형" 인지 "원"인지 분류되는 과정을 알기 위해 '0' 또는 '1' (직선의 윗부분과 아랫부분)으로 나누어진다.  선형회귀 장에서 배운 것처럼, 수학적으로 "선" (분류기)는 y = W*x + b로 표현된다.
 
 Generalizing, a neuron must learn a weight W (with the same dimension as the input data X) and an offset b (called bias in neural networks) to learn how to classify those values. With them, the neuron will compute a weighted sum of the inputs in X using weight W, and add the offset b; and finally the neuron will apply an “activation” non-linear function to produce the result of “0” or “1”.
 The function of the neuron can be more formally expressed as:
 
-일반화해서 말하자면 뉴런은 가중치 W (입력 데이터 X 와 같은 차원을 가짐)와 오프셋 b (뉴럴 네트워크에서 바이어스-bias-라고 불림)를 학습시켜 어떻게 포인트들을 분류하는지를 배우는 것입니다. 이런 방식을 따라 뉴런은 가중치 W 를 사용하여 입력 데이터 X 의 가중치 합을 계산하고 오프셋 b 를 더합니다. 마지막으로 뉴런은 ‘0’ 또는 ‘1’의 결과로 만들기 위해 비선형 ‘활성화’ 함수를 적용합니다. 뉴런의 기능을 조금 형식적으로 쓰면 아래와 같습니다.
+일반적으로, 신경은 점들의 값을 분류하기 위해서 가중치인 W (입력 데이터 X와 같은 차원)와 오프셋 b (신경망에서는 bias라고 표현)들을 학습시켜야 한다.  이러한 사항들을 기반으로, 신경은 가중치 W를 사용하여 입력 데이터 X의 총 합을 구하고, 오프셋 b를 더한다.  마지막으로 신경은 결과값인 "0"과 "1"을 생성하기 위해 비선형 함수인 "활성화 (Activation)" 함수를 적용한다.  뉴런의 함수를 좀 더 형식적으로 표현하면 다음과 같다.
 
 image043
 
 Having defined this function for our neuron, we want to know how the neuron can learn those parameters W and b from the labeled data with “squares” and “circles” in our example, to later label the new point “X”.
 
-뉴런의 함수를 정의한 것을 이용해 어떻게 뉴런이 사각형과 원으로 레이블되어 있는 훈련 데이터로 파라메타 W 와 b 를 학습하고 새로운 포인트 ‘X’ 를 분류하는지 알아보도록 하겠습니다.
+위에 신경의 함수를 정의한 것을 활용하여, 신경이 어떻게 "사각형"과 "원"으로 레이블 된 데이터에서 생성된 파라메터 W와 b값으로 새로운 점인 "X"를 학습하는 과정을 예제로 통해 알아 볼 것이다.
 
 A first approach could be similar to what we did with the linear regression, this is, feed the neuron with the known labeled data, and compare the obtained result with the real one. Then, when iterating, weights in W and b are adjusted to minimize the error, as shown again in chapter 2 for the linear regression line.
 
-시작은 선형회귀때 했던 것과 비슷합니다. 즉, 뉴런에게 레이블된 데이터를 주입하고 얻은 결과를 실제 값과 비교하는 것입니다. 그렇게 반복하면서 2장에서 선형 회귀분석에서 본 것 처럼 에러를 최소화하기 위해 가중치 W 와 b 를 조정합니다.
+ 시작은 선형회귀 때 접근했던 방법과 유사하다.  주어진 레이블 된 데이터를 뉴런에게 제공한 결과에 실제 값과 비교하는 것이다.  그 다음 이 과정을 반복하면서, 2장에서 회귀분석 선의 오류율을 최소화 한 것처럼 가중치인 W와 b 값을 조절한다.
+
+
+
+-----------------------------------------------------------------
+
+
+
+
 
 Once we have the W and b parameters we can compute the weighted sum, and now we need the function to turn the result stored in z into a ‘0’ or ‘1’. There are several activation functions available, and for this example we can use a popular one called sigmoid [33], returning a real value between 0 and 1
+
 
 일단 W 와 b 파라메타를 구해서 가중치 합(역주: W*x + b 값)을 계산하고 나면 z 에 저장된 결과를 ‘0’ 또는 ‘1’ 로 바꿀 함수가 필요합니다. 몇 종류의 활성화 함수가 있지만 여기에서는 0 과 1 사이의 실수를 리턴하는 유명한 시그모이드(sigmoid) 함수를 사용하겠습니다.
 
@@ -168,6 +177,15 @@ As previously said, we get to this by using an output layer with the softmax act
 The softmax function has two main steps: first, the “evidences” for an image belonging to a certain label are computed, and later the evidences are converted into probabilities for each possible label.
 
 소프트맥스 함수는 두개의 주요 단계가 있습니다. 첫번째는 이미지가 어떤 레이블에 속하는 지 근거(evidence)들을 계산하는 것이며 두번째는 근거들을 각 레이블에 대한 확률로 변환하는 것입니다.
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+
 
 Evidence of belonging
 클래스 소속 근거
@@ -244,121 +262,3 @@ The obtained effect when using exponentials is a multiplication effect in weight
 
 The interesting fact of such function is that a good prediction will have one output with a value near 1, while all the other outputs will be near zero; and in a weak prediction, some labels may show similar support.
 이런 함수의 좋은 점은 예측이 잘 되면 1 에 가까운 값이 하나가 있게 되고 다른 출력 값은 0 에 가깝게 되는 것입니다. 하지만 예측 값이 뚜렷하지 않을 때는 여러 레이블이 비슷한 확률을 가지게 될 수 있습니다.
-
-
------ 송치성님 파트 ----------
-
-
-Programming in TensorFlow
-
-After this brief description of what the algorithm does to recognize digits, we can implement it in TensorFlow. For this, we can make a quick look at how the tensors should be to store our data and the parameters for our model. For this purpose, the following schema depicts the data structures and their relations (to help the reader recall easily each piece of our problem):
-
-image066First of all we create two variables to contain the weights W and the bias b:
-
-W = tf.Variable(tf.zeros([784,10]))
-b = tf.Variable(tf.zeros([10]))
-Those variables are created using the tf.Variable function and the initial value for the variables; in this case we initialize the tensor with a constant tensor containing zeros.
-
-We see that W is shaped as [Dimension(784), Dimension(10)], defined by its argument, a constant tensor tf.zeros[784,10] dimensioned like W. The same happens with the bias b, shaped by its argument as [Dimension(10)].
-
-Matrix W has that size because we want to multiply the image vector of 784 positions for each one of the 10 possible digits, and produce a tensor of evidences after adding b.
-
-In this case of study using MNIST, we also create a tensor of two dimensions to keep the information of the x points, with the following line of code:
-
-x = tf.placeholder("float", [None, 784])
-The tensor x will be used to store the MNIST images as a vector of 784 floating point values (using None we indicate that the dimension can be any size; in our case it will be equal to the number of elements included in the learning process).
-
-Now we have the tensors defined, and we can implement our model. For this, TensorFlow provides several operations, being tf.nn.softmax(logits, name=None) one of the available ones, implementing the previously described softmax function. The arguments must be a tensor, and optionally, a name. The function returns a tensor of the same kind and shape of the tensor passed as argument.
-
-In our case, we provide to this function the resulting tensor of multiplying the image vector x and the weight matrix W, adding b:
-
-y = tf.nn.softmax(tf.matmul(x,W) + b)
-Once specified the model implementation, we can specify the necessary code to obtain the weights for W and bias b using an iterative training algorithm. For each iteration, the training algorithm gets the training data, applies the neural network and compares the obtained result with the expected one.
-
-To decide when a model is good enough or not we have to define what “good enough” means. As seen in prevous chapters, the usual methodology is to define the opposite: how “bad” a model is using cost functions. In this case, the goal is to obtain values of W and b that minimizes the function indicating how “bad” the model is.
-
-There are different metrics for the degree of error between resulting outputs and expected outputs on training data. One common metric is the mean squared error or the squared Euclidean distance, which have been previously seen. Even though, some research lines propose other metrics for such purpose in neural networks, like the cross entropy error, used in our example. This metric is computed like this:
-
-image068
-
-Where y is the predicted distribution of probability and y’ is the real distribution, obtained from the labeling of the training data-set. We will not enter into details of the maths behind the cross-entropy and its place in neural networks, as it is far more complex than the intended scope of this book; just indicate that the minimum value is obtained when the two distributions are the same. Again, if the reader wants to learn the insights of this function, we recommend reading Neural Networks and Deep Learning [36].
-
-To implement the cross-entropy measurement we need a new placeholder for the correct labels:
-
-y_ = tf.placeholder("float", [None,10])
-Using this placeholder, we can implement the cross-entropy with the following line of code, representing our cost function:
-
-cross_entropy = -tf.reduce_sum(y_*tf.log(y))
-First, we calculate the logarithm of each element y with the built-in function in TensorFlow tf.log(), and then we multiply it for each y_ element. Finally, using tf.reduce_sum we sum all the elements of the tensor (later we will see that the images are visited in bundles, and in this case the value of cross-entropy corresponds to the bundle of images y and not a single image).
-
-Iteratively, once determined the error for a sample, we have to correct the model (modifying the parameters W and b, in our case) to reduce the difference between computed and expected outputs in the next iteration.
-
-Finally, it only remains to specify this iterative minimization process. There are several algorithms for this purpose in neural networks; we will use the backpropagation (backward propagation of errors) algorithm, and as its name indicates, it propagates backwards the error obtained at the outputs to recompute the weights of W, especially important for multi-layer neural network.
-
-This method is used together with the previously seen gradient descent method, which using the cross-entropy cost function allows us to compute how much the parameters must change on each iteration in order to reduce the error using the available local information at each moment. In our case, intuitively it consist on changing the weights W a little bit on each iteration (this little bit expressed by a learning rate hyperparameter, indicating the speed of change) to reduce the error.
-
-Due that in our case we only have one layer neural network we will not enter into backpropagation methods. Only remember that TensorFlow knows the entire computing graph, allowing it to apply optimization algorithms to find the proper gradients for the cost function to train the model.
-
-So, in our example using the MNIST images, the following line of code indicates that we are using the backpropagation algorithm to minimize the cross-entropy using the gradient descent algorithm and a learning rate of 0.01:
-
-train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
-Once here, we have specified all the problem and we can start the computation by instantiating tf.Session() in charge of executing the TensorFlow operations in the available devices on the system, CPUs or GPUs:
-
-sess = tf.Session()
-Next, we can execute the operation initializing all the variables:
-
-sess.run(tf.initialize_all_variables())
-From this moment on, we can start training our model. The returning parameter for train_step, when executed, will apply the gradient descent to the involved parameters. So training the model can be achieved by repeating the train_step execution. Let’s say that we want to iterate 1.000 times our train_step; we have to indicate the following lines of code:
-
-for i in range(1000):
-   batch_xs, batch_ys = mnist.train.next_batch(100)
-   sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
-The first line inside the loop specifies that, for each iteration, a bundle of 100 inputs of data, randomly sampled from the training data-set, are picked. We could use all the training data on each iteration, but in order to make this first example more agile we are using a small sample each time. The second line indicates that the previously obtained inputs must feed the respective placeholders.
-
-Finally, just mention that the Machine Learning algorithms based in gradient descent can take advantage from the capabilities of automatic differentiation of TensorFlow. A TensorFlow user only has to define the computational architecture of the predictive model, combine it with the target function, and then just add the data.
-
-TensorFlow already manages the associated calculus of derivatives behind the learning process. When the minimize() method is executed, TensorFlow identifies the set of variables on which loss function depends, and computes gradients for each of these. If you are interested to know how the differentiation is implemented you can inspect the ops/gradients.py file [37].
-
-Model evaluation
-
-A model must be evaluated after training to see how much “good” (or “bad”) is. For example, we can compute the percentage of hits and misses in our prediction, seeing which examples were correctly predicted. In previous chapters, we saw that the tf.argmax(y,1) function returns the index of the highest value of a tensor according a given axis. In effect, tf.argmax(y,1) is the label in our model with higher probability for each input, while tf.argmax(y_,1) is the correct label. Using tf.equal method we can compare if our prediction coincides with the correct label:
-
-correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-This instruction returns a list of Booleans. To determine which fractions of predictions are correct, we can cast the values to numeric variables (floating point) and do the following operation:
-
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-For example, [True, False, True, True] will turn into [1,0,1,1] and the average will be 0.75 representing the percentage of accuracy. Now we can ask for the accuracy of our test data-set using the mnist.test as the feed_dict argument:
-
-print sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels})
-I obtained a value around 91%. Are these results good? I think that they are fantastic, because this means that the reader has been able to program and execute her first neural network using TensorFlow.
-
-Another problem is that other models may provide better accuracy, and this will be presented in the next chapter with a neural network containing more layers.
-
-The reader will find the whole code used in this chapter in the file RedNeuronalSimple.py, in the book’s github [38]. Just to provide a global view of it, I’ll put it here together:
-
-import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
-
-import tensorflow as tf
-
-x = tf.placeholder("float", [None, 784])
-W = tf.Variable(tf.zeros([784,10]))
-b = tf.Variable(tf.zeros([10]))
-
-matm=tf.matmul(x,W)
-y = tf.nn.softmax(tf.matmul(x,W) + b)
-y_ = tf.placeholder("float", [None,10])
-
-cross_entropy = -tf.reduce_sum(y_*tf.log(y))
-train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
-
-sess = tf.Session()
-sess.run(tf.initialize_all_variables())
-
-for i in range(1000):
-    batch_xs, batch_ys = mnist.train.next_batch(100)
-    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
-    correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels})
-[contents link]
